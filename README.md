@@ -30,6 +30,9 @@ The entire script to setup the inital setting for ubuntu
 - The command to lookup `/etc/group` and print which groups the user belongs to.
 - You can also do `groups USERNAME` to check the groups belonging for other users.
 
+### `newgrp`
+- Reflect the new group setting
+
 
 ## Ubuntu commands/root_files related to user
 
@@ -59,7 +62,7 @@ The entire script to setup the inital setting for ubuntu
 
 ### `usermod`
 - Typical command to edit/change the user accound information after you created it.use
-- `usermod -aG` GROUP USERNAME` is a typical way to add the USER into GROUP. (a: append, G: groups)
+- `usermod -aG GROUP USERNAME` is a typical way to add the USER into GROUP. (a: append, G: groups)
 - `usermod -d /home/USERNAME USERNAME`: change user's home directory.
 - `usermod -l NEWLOGINNAME OLDLOGINNAME`: change the loging name of the user.
 
@@ -93,18 +96,34 @@ The entire script to setup the inital setting for ubuntu
 - `/sbin` : Same, but for binaries with superuser (root) privileges required.
 - `/usr/bin` : Same as first, but for general system-wide binaries.
 - `/usr/sbin` : Same as above, but for binaries with superuser (root) privileges required.
-
+- For the binaries that is none of the above. You should use `/usr/local/bin` or `/usr/local/sbin` for system-wide available scripts.
+- The local path means it's not managed by the system packages.
 
 
 ## Ubuntu commands/root_files related to host name
 
 ### `/etc/hosts`
+- Lookup table for hostname.
+- You can add new hostname by adding new line. `XXX.XXX.XXX.XXX <canonical_hostname>`
 
 ### `/etc/hostname`
+- it just contain the name of this machine.
+
+### `hostname`
+- `hostname`: lookup `/etc/hostname` and print the name of this machine.
+- `hostname -I`: gives the ip address of this machine by looking up `/etc/hosts`.
+- `hostname -f`: print a fully qualified domain name (FQDN) by looking up `/etc/hosts`
 
 ## Ubuntu commands/root_files related to dpkg and apt
 
 ### `/etc/apt/sources.list.d`
+- Using the directory, you can easily add new repositories without the need to edit the central /etc/apt/sources.list file.
+- You can just put a file with a unique name and the same format as /etc/apt/sources.list into this folder and it is used by apt.
+
+### `apt`
+- Gathered command of `apt-get` and `apt-cache`.
+
+### `apt update`
 
 ## Ubuntu commands/root_files related to realtime kernel
 
