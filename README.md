@@ -63,9 +63,38 @@ The entire script to setup the inital setting for ubuntu
 - `usermod -d /home/USERNAME USERNAME`: change user's home directory.
 - `usermod -l NEWLOGINNAME OLDLOGINNAME`: change the loging name of the user.
 
-### `/etc/sudoers`
-
 ### `su`
+- `su` is short for `switch user`. Not for `super user`.
+- It's a simplest command to switch to another account during the current session.
+- `su -l USERNAME` or `su - USERNAME`: Login to other user account
+- `sudo su`: login as a root ".profile", ".bashrc" and "/etc/profile" will be started.
+- `su`: It will try you to login to a root account but usually it will not work since root account is locked.
+
+#### How to login as a root?
+- `sudo -i`: Run shell as a root with reading environment files. But not directly interacting with the root user.
+- `sudo su`: Run shell as a root with reading environment files.
+- `sudo -s`: Run shell as a root without reading any environment files.
+
+#### How to give sudo priviledge to the user?
+- Two ways
+- 1. `sudo usermod -aG sudo USERNAME`
+- 2. Edit `/etc/sudoers` and add `USERNAME ALL=(ALL:ALL) ALL`
+ 
+### `/etc/sudoers`
+- The file that is used to determine if a user has permission to run commands that require elevated privileges (like the commands in /sbin).
+- `root    ALL=(ALL:ALL) ALL`: root user have fill sudo privileges.
+- `USERNAME ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/whoami`: USERNAME can run `apt` and `whoami` with sudo privileges.
+
+### `/sbin`
+- For the binaries usaable vefore the `/usr` partition is mounted, and for binaries with superuser privileges required.
+
+#### what is the difference between `/bin`, `/sbin`, `/usr/bin`, `/usr/sbin`, `/usr/local/bin`, `/usr/local/sbin`
+- `/bin` : For binaries usable before the /usr partition is mounted. This is used for trivial binaries used in the very early boot stage or ones that you need to have available in booting single-user mode. Think of binaries like cat, ls, etc.
+- `/sbin` : Same, but for binaries with superuser (root) privileges required.
+- `/usr/bin` : Same as first, but for general system-wide binaries.
+- `/usr/sbin` : Same as above, but for binaries with superuser (root) privileges required.
+
+
 
 ## Ubuntu commands/root_files related to host name
 
@@ -93,10 +122,9 @@ The entire script to setup the inital setting for ubuntu
 Place to keep additional thrid-party software. ROS is here.
 
 # Ubuntu command related to user, group, super user
-su
-adduser
-useradd
-usermod
 chmod
 chown
 chgrp
+
+which
+locate
