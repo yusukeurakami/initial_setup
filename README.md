@@ -127,13 +127,14 @@ The entire script to setup the inital setting for ubuntu
 - `apt-get upgrade`: Upgrade all the currently installed software packages on the system. Under any circumstances currently installed packages are not removed or packages which are not already installed neither retrieved and installed to satisfy upgrade dependencies.
 - `apt-get remove PKGNAME`: To un-install software packages without removing their configuration files (for later re-use the same configuration).
 - `apt-get purge PKGNAME`: To remove software packages including their configuration files.
-- `apt-get clean`: Used to free up the disk space by cleaning retrieved (downloaded) .deb files (packages) from the local repository.
+- `apt-get clean`: Used to free up the disk space by cleaning retrieved (downloaded) .deb files (packages) from the local repository. This command removes everything but the lock file from `/var/cache/apt/archives` and `/var/cache/apt/archives/partial`.
 - `apt-get autoremove PKGNAME`: The ‘autoremove‘ sub command is used to auto remove packages that were certainly installed to satisfy dependencies for other packages and but they were now no longer required.
-- `apt-get`
 
 ### `apt-get install`
 - `apt-get install PKGNAME=VERSION`: Install particular package with certain version. You can use wildcard by making it a string. "*PKGNAME"
 - `apt-get install PKGNAME --only-upgrade`: it does not install new packages but it only upgrade the already installed packages and disables new installation of packages.
+- `apt-get install -f`: Attempt to correct a system with broken dependencies in place.
+- `apt-get install --reinstall PKGNAME` reinstall the pkg.
 
 ### `apt-cache`
 - command only for searching and collecting the information of packages.
