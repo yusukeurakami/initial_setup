@@ -191,4 +191,19 @@ which
 whereis
 whatis
 
-locate
+'locate'
+- search file in the system. It needs 'updatedb' command to search the file that is added within 24 hours.
+
+'which'
+- search file in $PATH.
+
+'whereis'
+- search file in $PATH with source.
+
+'find'
+- the most powerful search tool, which take a lot of options.
+- 'find / -iname "*RoS"': search file end with "ros" non-case sensitive from the entire system.
+- 'find / -type d -name find': search only directory
+- 'find / -type f -name find': search only file
+
+
