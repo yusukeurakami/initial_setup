@@ -111,7 +111,8 @@ The entire script to setup the inital setting for ubuntu
 
 ### `hostname`
 - `hostname`: lookup `/etc/hostname` and print the name of this machine.
-- `hostname -I`: gives the ip address of this machine by looking up `/etc/hosts`.
+- `hostname -i`: gives the ip addresses of host machine by looking up `/etc/hosts`.
+- `hostname -I`: gives the all ip addresses of this machine by looking up `/etc/hosts`.
 - `hostname -f`: print a fully qualified domain name (FQDN) by looking up `/etc/hosts`
 
 ## Ubuntu commands/root_files related to dpkg and apt
@@ -120,10 +121,42 @@ The entire script to setup the inital setting for ubuntu
 - Using the directory, you can easily add new repositories without the need to edit the central /etc/apt/sources.list file.
 - You can just put a file with a unique name and the same format as /etc/apt/sources.list into this folder and it is used by apt.
 
+### `apt-get`
+- installation of new software packages, removing existing software packages, upgrading of existing software packages.
+- `apt-get update`: Resynchronize the package index files from the their sources specified in /etc/apt/sources.list file. The update command fetched the packages from their locations and update the packages to newer version.
+- `apt-get upgrade`: Upgrade all the currently installed software packages on the system. Under any circumstances currently installed packages are not removed or packages which are not already installed neither retrieved and installed to satisfy upgrade dependencies.
+- `apt-get remove PKGNAME`: To un-install software packages without removing their configuration files (for later re-use the same configuration).
+- `apt-get purge PKGNAME`: To remove software packages including their configuration files.
+- `apt-get clean`: Used to free up the disk space by cleaning retrieved (downloaded) .deb files (packages) from the local repository.
+- `apt-get autoremove PKGNAME`: The ‘autoremove‘ sub command is used to auto remove packages that were certainly installed to satisfy dependencies for other packages and but they were now no longer required.
+- `apt-get`
+
+### `apt-get install`
+- `apt-get install PKGNAME=VERSION`: Install particular package with certain version. You can use wildcard by making it a string. "*PKGNAME"
+- `apt-get install PKGNAME --only-upgrade`: it does not install new packages but it only upgrade the already installed packages and disables new installation of packages.
+
+### `apt-cache`
+- command only for searching and collecting the information of packages.
+- `apt-cache search PKGNAME`: Show all the packages that has PKGNAME in the description.
+- `apt-cache pkgnames PKGNAME`: will show the available packages start with PKGNAME
+- `apt-cache show PKGNAME`: Show the detail description of the PKGNAME
+
 ### `apt`
 - Gathered command of `apt-get` and `apt-cache`.
 
-### `apt update`
+| apt command | the command it replaces | function of the command |
+| ----------- | ----------- | ------------|
+| apt install | apt-get install | Installs a package |
+| apt remove  | apt-get remove  | Removes a package |
+| apt purge   | apt-get purge   | Removes package with configuration |
+| apt update  | apt-get update  | Refreshes repository index |
+| apt upgrade | apt-get upgrade | Upgrades all upgradable packages |
+| apt autoremove  | apt-get autoremove  | Removes unwanted packages |
+| apt full-upgrade  | apt-get dist-upgrade  | Upgrades packages with auto-handling of dependencies |
+| apt search | apt-cache search | Searches for the program |
+| apt show  | apt-cache show  | Shows package details |
+| apt list | N/A | lists packages with criteria. `apt list --installed`, `apt list --upgradable` |
+| apt edit-sources| N/A | dits sources list |
 
 ## Ubuntu commands/root_files related to realtime kernel
 
@@ -146,4 +179,6 @@ chown
 chgrp
 
 which
+whereis
+whatis
 locate
