@@ -176,34 +176,34 @@ The entire script to setup the inital setting for ubuntu
 Place to keep additional thrid-party software. ROS is here.
 
 # Ubuntu command related to file permission.
-### chown
-- 'chown USERNAME FILENAME': Change the owner of the file.
-- 'chown USERNAME:USERNAME GILENAME':  hangs the group and owner of the file.
+### `chown`
+- `chown USERNAME FILENAME`: Change the owner of the file.
+- `chown USERNAME:USERNAME GILENAME`:  hangs the group and owner of the file.
 
-### chgrp
-- 'chgrp USERNAME FILENAME': Change the group of the file.
+### `chgrp`
+- `chgrp USERNAME FILENAME`: Change the group of the file.
 
-### chmod
-- 'chmod +x FILENAME': Make the file executable.
-- 'chmod 777 -R FOLDERNAME': Make the file under the folder fully accessible from any user.
+### `chmod`
+- `chmod +x FILENAME`: Make the file executable.
+- `chmod 777 -R FOLDERNAME`: Make the file under the folder fully accessible from any user.
 
 which
 whereis
 whatis
 
-'locate'
+`locate`
 - search file in the system. It needs 'updatedb' command to search the file that is added within 24 hours.
 
-'which'
+`which`
 - search file in $PATH.
 
-'whereis'
+`whereis`
 - search file in $PATH with source.
 
-'find'
+`find`
 - the most powerful search tool, which take a lot of options.
-- 'find / -iname "*RoS"': search file end with "ros" non-case sensitive from the entire system.
-- 'find / -type d -name find': search only directory
+- `find / -iname "*RoS"`: search file end with "ros" non-case sensitive from the entire system.
+- `find / -type d -name find`: search only directory
 - 'find / -type f -name find': search only file
 
 
