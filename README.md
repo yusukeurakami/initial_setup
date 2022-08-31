@@ -175,12 +175,20 @@ The entire script to setup the inital setting for ubuntu
 ### `/opt`
 Place to keep additional thrid-party software. ROS is here.
 
-# Ubuntu command related to user, group, super user
-chmod
-chown
-chgrp
+# Ubuntu command related to file permission.
+### chown
+- 'chown USERNAME FILENAME': Change the owner of the file.
+- 'chown USERNAME:USERNAME GILENAME':  hangs the group and owner of the file.
+
+### chgrp
+- 'chgrp USERNAME FILENAME': Change the group of the file.
+
+### chmod
+- 'chmod +x FILENAME': Make the file executable.
+- 'chmod 777 -R FOLDERNAME': Make the file under the folder fully accessible from any user.
 
 which
 whereis
 whatis
+
 locate
