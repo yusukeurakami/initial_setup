@@ -118,8 +118,9 @@ The entire script to setup the inital setting for ubuntu
 ## Ubuntu commands/root_files related to dpkg and apt
 
 ### `/etc/apt/sources.list.d`
-- Using the directory, you can easily add new repositories without the need to edit the central /etc/apt/sources.list file.
-- You can just put a file with a unique name and the same format as /etc/apt/sources.list into this folder and it is used by apt.
+- Using the directory, you can easily add new repositories without the need to edit the central `/etc/apt/sources.list` file.
+- You can just put a file with a unique name and the same format as `/etc/apt/sources.list` into this folder and it is used by apt.
+- 
 
 ### `apt-get`
 - installation of new software packages, removing existing software packages, upgrading of existing software packages.
