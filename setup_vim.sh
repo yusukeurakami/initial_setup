@@ -1,14 +1,24 @@
-!#/bin/bash
-set -e -x
+#!/bin/bash -eux
 
-# Yusuke Urakami
+sudo apt-get update
+sudo apt-get install software-properties-common
 
-sudo apt update
-sudo apt install git
-git clone https://github.com/amix/vimrc.git ~/.vim_runtime
-cd ~/.vim_runtime && sh install_awesome_vimrc.sh
+# install Node.js
+curl -sL install-node.now.sh/lts | sudo bash
 
-echo "set number" >> ~/.vim_runtime/vimrcs/basic.vim
+# install neovim
+wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+chmod +x nvim.appimage
+sudo mv nvim.appimage /usr/local/bin/nvim
+sudo apt-get install silversearcher-ag
 
-exit 0
+# neovim setting
+mkdir -p ${HOME}/.config/nvim/colors
+
+cp ./nvim_configs/init.vim ~/.config/nvim/init.vim
+cp ./nvim_configs/coc-settings.json ~/.config/nvim/coc-settings.json
+cp ./nvim_configs/hybrid.vim ~/.config/nvim/colors/hybrid.vim
+
+# install neovim library
+pip install -U neovim
 
