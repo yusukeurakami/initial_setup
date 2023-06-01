@@ -1,4 +1,6 @@
-" install Dein (Plugin manager)
+if &compatible
+    set nocompatible
+endif
 let $CACHE = expand('~/.cache')
 if !isdirectory($CACHE)
   call mkdir($CACHE, 'p')
@@ -14,7 +16,6 @@ if &runtimepath !~# '/dein.vim'
   execute 'set runtimepath^=' . substitute(
         \ fnamemodify(s:dein_dir, ':p') , '[/\\]$', '', '')
 endif
-
 if dein#load_state('~/.cache/dein')
     call dein#begin('~/.cache/dein')
     call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
@@ -55,7 +56,6 @@ endif
 if dein#check_install()
     call dein#install()
 endif
-
 " autocmds
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -64,67 +64,46 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 autocmd FileType vue syntax sync fromstart
 filetype plugin on
-
-" terminal mode setting
-tnoremap <Esc> <C-\><C-n> # map Ctrl+\ Ctrl+n sequence to Esc key in termial mode
-
-" Do not change line when pressing Enter during the autocompletion 
-inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
-
-"This unsets the "last search pattern" register by hitting ESC key
-nnoremap <CR> :noh<CR><CR>
-
-" tab
-noremap <C-T> :tabnew<CR>
-noremap <C-N> :tabNext<CR>
-
-" Git
-noremap <C-D> :Gdiff<CR>
-noremap <C-B> :Git blame<CR>
-noremap <C-S> :Git status<CR>
-
-" airline setting
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'hybrid'
-
-" NERDTree setting
-nmap <C-f> :NERDTree<CR>
-
-" mark setting
-nmap <Space>m <Plug>(quickhl-manual-this)
-xmap <Space>m <Plug>(quickhl-manual-this)
-nmap <Space>M <Plug>(quickhl-manual-reset)
-xmap <Space>M <Plug>(quickhl-manual-reset)
-
-" transparent background
-let g:transparent_enabled = v:true
-
 " base settings
-set ignorecase
-set smartcase
 set nu
-set autoindent
-set incsearch
-set laststatus=2
-set hlsearch
-set encoding=utf-8
-set background=dark
-set backspace=indent,eol,start
-set cursorline
 syntax on
-colorscheme hybrid
-set modifiable
+colorscheme jellybeans
+set t_Co=256
+set background=dark
 set title
 set list
-set listchars=tab:>_,trail:-,extends:>,precedes:<,nbsp:%,eol:↲
+set listchars=tab:>_,trail:-,extends:>,precedes:<,nbsp:%
+set autoindent
 set tabstop=4
 set expandtab
 set shiftwidth=4
+set encoding=utf-8
+set incsearch
+set laststatus=2
+set hlsearch
 set completeopt=menuone
+set backspace=indent,eol,start
+set cursorline
 set conceallevel=0
 set inccommand=split
+set nobackup
+set nowritebackup
 hi clear CursorLine
-
+" fill columns after 80 with red
+execute "set colorcolumn=" . join(range(120, 120), ',')
+highlight ColorColumn ctermbg=52 guibg=#2c2d27
+" transparent background
+let g:transparent_enabled = v:true
+" close brackets and quotes
+inoremap { {}<LEFT>
+inoremap [ []<LEFT>
+inoremap ( ()<LEFT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+" terminal mode setting
+tnoremap <Esc> <C-\><C-n>
+" assign esc to Ctrl-C
+inoremap <C-c> <Esc>
 " denite settings
 noremap <C-P> :<C-u>Denite file/rec<CR>
 noremap <C-G> :<C-u>Denite grep<CR>
@@ -176,7 +155,23 @@ call denite#custom#option('default', {
     \ 'start_filter': v:true,
     \ 'match_highlight': v:true,
     \ })
-
+" tab
+noremap <C-T> :tabnew<CR>
+noremap <C-N> :tabNext<CR>
+" Git
+noremap <C-D> :Gdiff<CR>
+noremap <C-B> :Git blame<CR>
+noremap <C-S> :Git status<CR>
+" airline setting
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'jellybeans'
+" NERDTree setting
+nmap <C-f> :NERDTree<CR>
+" mark setting
+nmap <Space>m <Plug>(quickhl-manual-this)
+xmap <Space>m <Plug>(quickhl-manual-this)
+nmap <Space>M <Plug>(quickhl-manual-reset)
+xmap <Space>M <Plug>(quickhl-manual-reset)
 " coc setting
 if has("nvim-0.5.0") || has("patch-8.1.1564")
     " Recently vim can merge signcolumn and number column into one
@@ -214,7 +209,6 @@ let g:coc_global_extensions = [
     \ 'coc-rls',
     \ 'coc-solidity',
     \ ]
-
 " treesitter setting
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -224,3 +218,22 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 EOF
+" Python
+let python_highlight_all = 1
+" Vue
+let g:vue_disable_pre_processors=1
+" disable conceals
+let g:vim_markdown_folding_disabled = 1
+let g:tex_conceal=''
+let g:vim_json_syntax_conceal = 0
+let g:vim_markdown_conceal = 0
+let g:vimtex_syntax_conceal_default = 0
+" memo setting
+let g:memolist_memo_suffix = "md"
+" Go settings
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
