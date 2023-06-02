@@ -125,6 +125,18 @@ set conceallevel=0
 set inccommand=split
 hi clear CursorLine
 
+" window split/switch
+nnoremap <silent> <S-j> :split<CR>
+nnoremap <silent> <S-l> :vsplit<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-Left> <C-w>h
+nnoremap <C-Down> <C-w>j
+nnoremap <C-Up> <C-w>k
+nnoremap <C-Right> <C-w>l
+
 " denite settings
 noremap <C-P> :<C-u>Denite file/rec<CR>
 noremap <C-G> :<C-u>Denite grep<CR>
