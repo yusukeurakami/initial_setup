@@ -100,6 +100,7 @@ xmap <Space>M <Plug>(quickhl-manual-reset)
 let g:transparent_enabled = v:true
 
 " base settings
+set modifiable
 set ignorecase
 set smartcase
 set nu
