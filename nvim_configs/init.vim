@@ -137,6 +137,9 @@ nnoremap <C-Down> <C-w>j
 nnoremap <C-Up> <C-w>k
 nnoremap <C-Right> <C-w>l
 
+" Save file when ESC from the insert mode
+autocmd InsertLeave * silent! update
+
 " denite settings
 noremap <C-P> :<C-u>Denite file/rec<CR>
 noremap <C-G> :<C-u>Denite grep<CR>
