@@ -119,7 +119,8 @@ alias isaac='docker run --name isaac-sim --entrypoint bash -it --gpus all -e "AC
     -v ~/docker/isaac-sim/config:/root/.nvidia-omniverse/config:rw \
     -v ~/docker/isaac-sim/data:/root/.local/share/ov/data:rw \
     -v ~/docker/isaac-sim/documents:/root/Documents:rw \
-    -v ~/ros/noetic:/home/ros/noetic \
+    -v ~/ros:/home/ros \
+    -v ~/Desktop:/root/Desktop \
     -v ~/:/home/urakamiy \
     -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
     nvcr.io/nvidia/isaac-sim:2022.2.1'
