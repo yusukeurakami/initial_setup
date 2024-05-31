@@ -1,5 +1,7 @@
 #!/bin/bash
-#set -e -x
+set -e -x
+
+source setup_utils.sh
 
 # install zsh and oh-my-zsh
 sudo apt install zsh curl git -y

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x
 
+source setup_utils.sh
+
 if ! command -v python &> /dev/null
 then
     echo "python not exists"
@@ -9,7 +11,7 @@ else
     echo "python found"
 fi
 
-sudo apt update && sudo apt install\
+sudo apt update && sudo apt install -y\
     git\
     meld\
     build-essential\
@@ -26,7 +28,7 @@ sudo apt update && sudo apt install\
     htop\
     rviz\
     python3-ipdb\
-    -y --no-install-recommends
+    --no-install-recommends
 sudo apt autoremove -y
 
 pip install jupyterlab matplotlib IPython

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x
 
+source setup_utils.sh
+
 VERSION="3.25.2"
 
 sudo apt purge cmake -y

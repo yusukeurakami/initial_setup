@@ -2,6 +2,23 @@
 
 The entire script to setup the inital setting for ubuntu
 
+## Ubuntu step-by-step
+```bash
+./setup_basic_pkgs.sh
+./setup_zsh_first.sh
+./setup_zsh_second.sh
+./setup_env.sh
+./setup_vim.sh
+./setup_cmake.sh
+./setup_docker.sh
+
+# copy the following to the new repos
+.pre-commit-config.yaml
+pyproject.toml
+.isort.cfg
+.flake8
+```
+
 
 ## Ubuntu commands/root_files related to booting 
 ### `/etc/default/grub`

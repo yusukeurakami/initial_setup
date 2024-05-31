@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
+source setup_utils.sh
+
 sudo apt-get update
 sudo apt-get install software-properties-common
 

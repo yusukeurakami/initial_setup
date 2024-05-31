@@ -1,0 +1,224 @@
+#!/usr/bin/python3
+
+import argparse
+
+try:
+    import argcomplete
+except ModuleNotFoundError:
+    argcomplete = None
+
+import os
+import socket
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any, Dict, List
+
+import appdirs
+import yaml
+
+
+def env_var(name: str, default=None) -> str:
+    try:
+        default = os.environ[name]
+    except KeyError as key_err:
+        raise key_err
+    return default
+
+
+HOME: str = env_var('HOME')
+USER: str = env_var('USER')
+CONFIG_FILENAME: str = Path(f"{appdirs.user_config_dir()}/shokunin/config.yaml")
+
+# keys in the config file and dicts
+ADDITIONAL_MOUNTS_KEY: str = "ADDITIONAL_MOUNTS"
+WORKDIR_KEY: str = 'WORKDIR'
+
+DEFAULT_CONFIGS: Dict[str, Any] = {
+    ADDITIONAL_MOUNTS_KEY: [
+        "/tmp/.X11-unix:/tmp/.X11-unix",
+        "/etc/group:/etc/group:ro",
+        "/etc/passwd:/etc/passwd:ro",
+        "/usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d:ro",
+        "/dev/shm:/dev/shm",
+        "/dev/bus:/dev/bus:ro",
+        "/dev/serial:/dev/serial:ro",
+        "/dev/input:/dev/input:ro",
+        f"{HOME}/.gitconfig:/etc/gitconfig:ro",
+        f"{HOME}/:/home/{USER}",
+        f"{HOME}/.ssh/:/root/.ssh",
+        "/Users/y.urakamiy:/home/y.urakami",
+    ]
+}
+
+
+def dump_default_config(override: bool = False) -> None:
+    """
+    Default configurations saved to the config file (${HOME}/.config/shokunin/config.yaml).
+    This values can be overriden at run time
+    """
+
+    if not override and os.path.isfile(CONFIG_FILENAME):
+        with open(CONFIG_FILENAME, 'r') as yf:
+            content = yaml.safe_load(yf)
+        if ADDITIONAL_MOUNTS_KEY in content:
+            return
+
+    default_configs = {"__VERSION__": 2}
+    default_configs.update(DEFAULT_CONFIGS)
+
+    os.makedirs(os.path.dirname(CONFIG_FILENAME), exist_ok=True)
+
+    with open(CONFIG_FILENAME, 'w') as yf:
+        yaml.dump(default_configs, yf, default_flow_style=False, sort_keys=False)
+
+
+def default_container_name(image_name, default=None):
+    if default is not None:
+        return default
+    image, *tag = image_name.rsplit(':', 1)
+    (tag,) = tag or ('latest',)
+    *_, base_name = image.rsplit('/', 1)
+    image_name = f'{image}:{tag}'
+    # check if image is already running
+    process = subprocess.run("docker ps --format {{.Image}}".split(), capture_output=True)
+    uname = os.getenv('USER')
+    n = sum([x == image_name for x in process.stdout.decode().split('\n')])
+    default = f'{base_name}_{tag}_{n}_{uname}' if n > 0 else f'{base_name}_{tag}'
+    return default
+
+
+def get_docker_image_names():
+    process = subprocess.run("docker images --format {{.Repository}}:{{.Tag}}".split(), capture_output=True)
+    return list(filter(lambda x: len(x) > 0, process.stdout.decode().split('\n')))
+
+
+def get_command(args) -> List[str]:
+    IMAGE_NAME = env_var('IMAGE_NAME', args.image)
+    CONTAINER_NAME = env_var('CONTAINER_NAME', default_container_name(IMAGE_NAME, args.container))
+    DISPLAY = env_var('DISPLAY')
+    XAUTH = env_var('XAUTH')
+
+    mode = "-dt" if args.detached else "-it"
+    cmd_list = [
+        "docker",
+        "run",
+        f"{mode}",
+        "--privileged",
+        "--env=QT_X11_NO_MITSHM=1",
+        "--env=LIBGL_ALWAYS_INDIRECT=",
+        "--env=LIBGL_ALWAYS_SOFTWARE=1",
+        "--env=NVIDIA_DRIVER_CAPABILITIES=all",
+        f"--env=DISPLAY={DISPLAY}",
+        f"--env=XAUTHORITY={XAUTH}",
+        f"--name={CONTAINER_NAME}",
+        f"--shm-size={args.shm}",
+        "--rm",
+        "--ipc=host",
+        "--pid=host",
+        "--net=host",
+        f"--user={args.user}",
+        "--ulimit",
+        "nofile=1024:524288",
+    ]
+
+    def get_mount_entry_key(entry: str) -> str:
+        assert len(entry) > 0
+        split_entry = entry.strip().split(":")
+        assert len(split_entry) >= 2, f"Invalid format for mounting: {split_entry}"
+        return split_entry[1].rstrip("/")
+
+    overrideable_params_dict = {WORKDIR_KEY: args.workdir, ADDITIONAL_MOUNTS_KEY: {}}
+
+    # first we add the config file entries and then we can override them with command line args
+    assert CONFIG_FILENAME.exists(), f'Check that the config file exist at {CONFIG_FILENAME}'
+    with open(CONFIG_FILENAME, "r") as config_file:
+        config_file_data: Dict[str, Any] = yaml.safe_load(config_file)
+
+        # backward compatibility
+        if "__VERSION__" not in config_file_data or config_file_data["__VERSION__"] < 2:
+            # TODO: Update the config file with the new version
+            overrideable_params_dict[ADDITIONAL_MOUNTS_KEY] = {
+                get_mount_entry_key(entry): entry for entry in DEFAULT_CONFIGS[ADDITIONAL_MOUNTS_KEY]
+            }
+
+        if ADDITIONAL_MOUNTS_KEY in config_file_data and config_file_data[ADDITIONAL_MOUNTS_KEY]:
+            assert (
+                type(config_file_data[ADDITIONAL_MOUNTS_KEY]) is list
+            ), "Expected format for ADDITIONAL_MOUNTS is a list entries like: base/compose/dir:docker/dir"
+            for entry in config_file_data[ADDITIONAL_MOUNTS_KEY]:
+                # docker -v format allows up to three colon separated fields, with the target dir being the second one.
+                key = get_mount_entry_key(entry)
+                if key in overrideable_params_dict[ADDITIONAL_MOUNTS_KEY]:
+                    print(
+                        "\033[33mWarning: overriding mount entry "
+                        f"{overrideable_params_dict[ADDITIONAL_MOUNTS_KEY][key]} with {entry}\033[0m"
+                    )
+                overrideable_params_dict[ADDITIONAL_MOUNTS_KEY][key] = entry
+        overrideable_params_dict[WORKDIR_KEY] = args.workdir or config_file_data.get(WORKDIR_KEY, None)
+
+    for entry in args.v:
+        key = get_mount_entry_key(entry)
+        if key in overrideable_params_dict[ADDITIONAL_MOUNTS_KEY]:
+            print(f"Warning: overriding mount entry {overrideable_params_dict[key]} with {entry}")
+        overrideable_params_dict[ADDITIONAL_MOUNTS_KEY][key] = entry
+
+    for entry in overrideable_params_dict[ADDITIONAL_MOUNTS_KEY].values():
+        print(f"\033[32mAdding mount: {entry}\033[0m")
+        cmd_list.append(f"-v={entry}")
+
+    if overrideable_params_dict[WORKDIR_KEY]:
+        cmd_list.append(f"-w={overrideable_params_dict[WORKDIR_KEY]}")
+
+    if args.gpus:
+        cmd_list.append("--gpus=all")
+
+    cmd_list.append(IMAGE_NAME)
+    return cmd_list
+
+
+def run(cmd_list: List[str]) -> None:
+    process = subprocess.Popen(
+        cmd_list,
+        stdout=sys.stdout,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+    )
+    process.communicate()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", required=False, type=str, choices=get_docker_image_names())
+    parser.add_argument("--container", required=False, type=str)
+    parser.add_argument("--gpus", required=False, action="store_true")
+    parser.add_argument("--shm", required=False, default="8G", type=str)
+    parser.add_argument("--workdir", required=False, help="Working directory inside the container")
+    parser.add_argument("--detached", required=False, action="store_true", help="Run container in background")
+    parser.add_argument(
+        "-v",
+        default=[],
+        action="append",
+        help="Specify additional drives to be mounted in the format `-v /host/dir:/docker/dir`",
+    )
+    parser.add_argument("--user", required=False, default="root", help="Specify the user, default is root")
+    # a better way is to use ChoicesCompleter; but won't soft-fail.
+    if argcomplete is not None:
+        # bash:
+        # $ activate-global-python-argcomplete --user
+        # Installing bash completion script <HOME>/.bash_completion.d/python-argcomplete
+        # $ eval "$(register-python-argcomplete docker-run)"
+        # $ docker-run --image <TAB>
+        #
+        # zsh: load bashcompinit before doing above
+        # > autoload bashcompinit
+        # > bashcompinit
+        #
+        # You might want to add these to your .<>shrc file.
+        argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+
+    dump_default_config(False)
+    command = get_command(args)
+    # print(' '.join(command))
+    run(command)

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x
 
+source setup_utils.sh
+
 # clean up
 sudo apt update
 sudo apt install -y gnome-terminal
