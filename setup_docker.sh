@@ -43,4 +43,3 @@ sudo usermod -aG docker $USER
 newgrp docker
 
 exit 0
-

@@ -23,4 +23,3 @@ cp ./nvim_configs/hybrid.vim ~/.config/nvim/colors/hybrid.vim
 
 # install neovim library
 pip install -U neovim
-

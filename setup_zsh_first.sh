@@ -15,4 +15,3 @@ fi
 source ~/.zshrc
 
 exit 0
-
