@@ -12,4 +12,3 @@ rm /tmp
 cd ~
 
 exit 0
-

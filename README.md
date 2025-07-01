@@ -2,8 +2,25 @@
 
 The entire script to setup the inital setting for ubuntu
 
+## Ubuntu step-by-step
+```bash
+./setup_basic_pkgs.sh
+./setup_zsh_first.sh
+./setup_zsh_second.sh
+./setup_env.sh
+./setup_vim.sh
+./setup_cmake.sh
+./setup_docker.sh
 
-## Ubuntu commands/root_files related to booting 
+# copy the following to the new repos
+.pre-commit-config.yaml
+pyproject.toml
+.isort.cfg
+.flake8
+```
+
+
+## Ubuntu commands/root_files related to booting
 ### `/etc/default/grub`
 - Have all grub setting when you boot. Changing the default kernel or set the timeout for grub can be set here.
 - the setting inside this will be reflected when `sudo update-grub` and reboot. (/usr/sbin/update-grub2 is just a symbolic link to /usr/sbin/update-grub)
@@ -45,7 +62,7 @@ The entire script to setup the inital setting for ubuntu
 #### The difference between the information in these two files.
 - `/etc/passwd` shows each user's primary group. `/etc/group` shows users who have a given group as one of their supplementary groups.
 - When you want to know what kind of group exists, and who belongs to the group => `/etc/group`
-- When you want to know what kind of user exists, and check User ID, Group ID, default Shell for that user. => `etc/passwd` 
+- When you want to know what kind of user exists, and check User ID, Group ID, default Shell for that user. => `etc/passwd`
 
 ### `passwd`
 - Change the passwd of the current user.
@@ -82,7 +99,7 @@ The entire script to setup the inital setting for ubuntu
 - Two ways
 - 1. `sudo usermod -aG sudo USERNAME`
 - 2. Edit `/etc/sudoers` and add `USERNAME ALL=(ALL:ALL) ALL`
- 
+
 ### `/etc/sudoers`
 - The file that is used to determine if a user has permission to run commands that require elevated privileges (like the commands in /sbin).
 - `root    ALL=(ALL:ALL) ALL`: root user have fill sudo privileges.
@@ -120,7 +137,7 @@ The entire script to setup the inital setting for ubuntu
 ### `/etc/apt/sources.list.d`
 - Using the directory, you can easily add new repositories without the need to edit the central `/etc/apt/sources.list` file.
 - You can just put a file with a unique name and the same format as `/etc/apt/sources.list` into this folder and it is used by apt.
-- 
+-
 
 ### `apt-get`
 - installation of new software packages, removing existing software packages, upgrading of existing software packages.
@@ -205,5 +222,3 @@ whatis
 - `find / -iname "*RoS"`: search file end with "ros" non-case sensitive from the entire system.
 - `find / -type d -name find`: search only directory
 - 'find / -type f -name find': search only file
-
-

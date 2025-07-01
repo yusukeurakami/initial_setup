@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
+source setup_utils.sh
+
 sudo apt-get update
 sudo apt-get install software-properties-common
 
@@ -21,4 +23,3 @@ cp ./nvim_configs/hybrid.vim ~/.config/nvim/colors/hybrid.vim
 
 # install neovim library
 pip install -U neovim
-
