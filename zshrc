@@ -107,6 +107,7 @@ alias nv='nvidia-smi'
 alias nvv='watch -n 1 nvidia-smi'
 alias vz='vim ~/.zshrc'
 alias sz='source ~/.zshrc'
+alias docrmi='docker rmi $(docker images -f "dangling=true" -q)'
 alias isaac='docker run --name isaac-sim --entrypoint bash -it --gpus all -e "ACCEPT_EULA=Y" --rm --network=host \
     -v /etc/vulkan/icd.d/nvidia_icd.json:/etc/vulkan/icd.d/nvidia_icd.json \
     -v /etc/vulkan/implicit_layer.d/nvidia_layers.json:/etc/vulkan/implicit_layer.d/nvidia_layers.json \
@@ -140,18 +141,3 @@ unset PYTHONPATH
 export PATH=$PATH:/usr/local/cuda/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/demo/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/demo/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/demo/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/demo/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
