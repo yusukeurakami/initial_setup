@@ -21,7 +21,8 @@ def env_var(name: str, default=None) -> str:
     try:
         default = os.environ[name]
     except KeyError as key_err:
-        raise key_err
+        print(f"Key error: {key_err}")
+        pass
     return default
 
 
@@ -192,7 +193,7 @@ if __name__ == '__main__':
     parser.add_argument("--container", required=False, type=str)
     parser.add_argument("--gpus", required=False, action="store_true")
     parser.add_argument("--shm", required=False, default="8G", type=str)
-    parser.add_argument("--workdir", required=False, help="Working directory inside the container")
+    parser.add_argument("--workdir", required=False, default="/home", help="Working directory inside the container")
     parser.add_argument("--detached", required=False, action="store_true", help="Run container in background")
     parser.add_argument(
         "-v",
