@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# -*- Yusuke Urakami -*-
 
 function _formatter {
     echo "formatting $1"
@@ -13,6 +14,10 @@ function _formatter {
 
 	    # Code style checker to checking if code is compliant with PEP8, and also check the programming error
 	    flake8 --max-line-length=120 --ignore=E203,E266,E402,E501,W503,E731 $1
+
+      # Type checking with mypy
+      mypy --ignore-missing-imports $1
+
     elif [ "${line##*.}" = "hpp" ] || [ "${line##*.}" = "cpp" ] || [ "${line##*.}" = "c" ] || [ "${line##*.}" = "h" ]; then
         clang-format -i -style=file $1
         # cppcheck $1
@@ -66,10 +71,10 @@ function formatter {
   [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)
 ) && sourced=1 || sourced=0
 
-# run formatter function for $1 if the script is executed directly.
+# run formatter function for all arguments if the script is executed directly.
 # If the script is sourced, the following will not be running.
 if [ $sourced = "0" ]
 then
-  formatter $1;
+  formatter "$@";
   set -e;
 fi
