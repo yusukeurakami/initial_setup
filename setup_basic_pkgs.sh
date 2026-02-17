@@ -26,7 +26,6 @@ sudo apt update && sudo apt install -y\
     software-properties-common\
     tmux\
     htop\
-    rviz\
     python3-ipdb\
     --no-install-recommends
 sudo apt autoremove -y

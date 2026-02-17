@@ -12,8 +12,8 @@ cd ~/Downloads
 wget https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}.tar.gz
 tar -xvf cmake-${VERSION}.tar.gz
 cd cmake-${VERSION}
-./bootstrap
-make
+./bootstrap --parallel=$(nproc)
+make -j$(nproc)
 sudo make install
 
 exit 0
